@@ -35,8 +35,10 @@ for ($mask = 0; $mask -lt 8; $mask++) {
     [IO.File]::WriteAllText($settings, ($configuration | ConvertTo-Json))
     foreach ($event in $events) {
         $state = Invoke-Event $event.data $true $false | ConvertFrom-Json
-        Assert ($state.wouldNotify -eq $configuration[$event.key]) ('Wrong selection for ' + $event.key)
-        if (-not $configuration[$event.key]) {
+        $expected = ($event.key -ne 'notify_approval' -and $configuration[$event.key])
+        Assert ($state.wouldNotify -eq $expected) ('Wrong selection for ' + $event.key)
+        if ($event.key -eq 'notify_approval') { Assert $state.approvalDeferred 'Permission request should await an actual decision UI' }
+        if (-not $expected) {
             Assert ((Invoke-Event $event.data $false $false) -eq '{}') 'Suppressed event changed response contract'
             Assert (-not (Test-Path -LiteralPath $runtime)) 'Suppressed event performed a notification action'
         }
@@ -49,7 +51,8 @@ for ($mask = 0; $mask -lt 8; $mask++) {
 }
 # Missing category fields in an old configuration retain previous behavior.
 [IO.File]::WriteAllText($settings, '{"enabled":true,"sound":true,"require_tray":false}')
-foreach ($event in $events) { Assert ((Invoke-Event $event.data $true $false | ConvertFrom-Json).wouldNotify) 'Old configuration changed behavior' }
+foreach ($event in $events) { Assert ((Invoke-Event $event.data $true $false | ConvertFrom-Json).wouldNotify -eq ($event.key -ne 'notify_approval')) 'Old configuration changed behavior' }
+Assert ((Invoke-Event $null $true $true | ConvertFrom-Json).wouldNotify) 'Old configuration blocked confirmed approval'
 [IO.File]::WriteAllText($settings, '{"enabled":false,"require_tray":false,"notify_completed":true,"notify_approval":true,"notify_question":true}')
 foreach ($event in $events) { Assert (-not (Invoke-Event $event.data $true $false | ConvertFrom-Json).wouldNotify) 'Master switch was ignored' }
 [IO.File]::WriteAllText($settings, '{"enabled":true,"require_tray":true,"notify_completed":true,"notify_approval":true,"notify_question":true}')

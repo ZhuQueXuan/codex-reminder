@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([string]$ReleaseVersion = '2026.10.13.2')
+param([string]$ReleaseVersion = '2026.10.13.3')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $installer = Join-Path $root ('Releases\Codex提醒助手-安装程序-' + $ReleaseVersion + '.exe')

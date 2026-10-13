@@ -38,7 +38,7 @@ Windows 托盘工具：切到其他软件后，在 Codex 回复完成、需要�
 | 选项 | 情况 |
 | --- | --- |
 | 回复完成时 | 一个聊天回合结束 |
-| 需要审批时 | 权限申请，或检测到工具待确认界面 |
+| 需要审批时 | 持续等待用户批准的权限或工具确认界面 |
 | 需要回答问题时 | Codex 调用支持的提问工具 |
 
 例如只勾“需要审批时”，完成和提问就不会弹出或发声。默认三项全开，全不勾选则不自动提醒。总开关暂停后保留选择。手动“测试弹出”不受类型开关限制。
@@ -51,7 +51,8 @@ Windows 托盘工具：切到其他软件后，在 Codex 回复完成、需要�
 
 补充审批检测只读取决策按钮名称、启用状态和明确的等待状态，不执行点击，不读取文档正文，不保存对话、审批内容或凭据。同一待审批控件只提醒一次。
 
-- 完成表示一个回合结束，未必是整个长期任务完成；自动审批可能自行处理申请。
+- 完成表示一个回合结束，未必是整个长期任务完成。
+- 开始申请命令权限不直接弹窗。审批提醒需要连续两次识别到同一待审批界面，忽略短暂出现后自动处理的确认，避免执行普通命令时反复抢焦点。
 - 未显示或未向 Windows 暴露控件的审批，以及绕过事件机制的提问，可能漏报。
 - 锁屏、安全桌面、部分全屏程序和 Windows 焦点限制可能阻止弹回，不修改系统焦点策略。
 - 显示 Codex 主窗口，不自动跳到具体聊天。多窗口、远程、云端及多屏尚未完整验证。
@@ -64,8 +65,8 @@ Windows 托盘工具：切到其他软件后，在 Codex 回复完成、需要�
 ```powershell
 # 先退出本目录的托盘实例
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Build.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Package.ps1 -ReleaseVersion 2026.10.13.2
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\BuildInstaller.ps1 -ReleaseVersion 2026.10.13.2
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Package.ps1 -ReleaseVersion 2026.10.13.3
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\BuildInstaller.ps1 -ReleaseVersion 2026.10.13.3
 ```
 
 程序生成在 `App`，发行文件生成在 `Releases`。安装包自动包含 EXE 与同名高清屏 `.exe.config`，不要单独移动程序。构建不覆盖已有同版本安装 EXE，再次发布需换版本号。
@@ -91,7 +92,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-event-std
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-event-selection.ps1
 # 先构建发行文件再运行以下两项
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-package.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-installer.ps1 -ReleaseVersion 2026.10.13.2
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-installer.ps1 -ReleaseVersion 2026.10.13.3
 ```
 
 事件和生命周期测试会临时切换源码目录的设置并恢复，运行前先退出该目录的托盘。夹具与控件测试不操作用户的 Codex 决策按钮。另一台电脑的完整安装、信任与真实提醒，以及所有提问和审批路径，尚未逐项实测。

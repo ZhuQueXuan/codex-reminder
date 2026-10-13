@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
 
@@ -14,16 +15,21 @@ namespace CodexReminder
     public sealed class ApprovalSignalGate
     {
         string lastKey;
+        string candidateKey;
+        int stableScans;
         int emptyScans;
         public bool Observe(PendingApprovalSignal signal)
         {
-            if (signal == null) { if (++emptyScans >= 2) lastKey = null; return false; }
+            if (signal == null) { candidateKey = null; stableScans = 0; if (++emptyScans >= 2) lastKey = null; return false; }
             emptyScans = 0;
             if (lastKey == signal.Key) return false;
+            if (candidateKey != signal.Key) { candidateKey = signal.Key; stableScans = 1; return false; }
+            if (++stableScans < 2) return false;
             lastKey = signal.Key;
+            candidateKey = null; stableScans = 0;
             return true;
         }
-        public void Reset() { lastKey = null; emptyScans = 0; }
+        public void Reset() { lastKey = candidateKey = null; emptyScans = stableScans = 0; }
     }
 
     public static class ApprovalObserver
@@ -96,6 +102,7 @@ namespace CodexReminder
                             }
                         }
                         catch (ElementNotAvailableException) { }
+                        catch (COMException) { /* Ignore a control that vanished during the scan. */ }
                     }
                 }
             }

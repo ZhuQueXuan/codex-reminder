@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param(
     [ValidatePattern('^\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$')]
-    [string]$ReleaseVersion = '2026.10.13.2',
+    [string]$ReleaseVersion = '2026.10.13.3',
     [string]$ArchivePath
 )
 $ErrorActionPreference = 'Stop'

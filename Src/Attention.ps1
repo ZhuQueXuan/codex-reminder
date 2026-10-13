@@ -73,11 +73,14 @@ try {
         $reason = Get-AttentionReason $eventData
     }
     $categoryEnabled = Test-EventEnabled $settings $reason
+    # PermissionRequest precedes the actual decision and may be auto-approved.
+    # Never steal focus here; the tray observes a sustained pending decision.
+    $approvalDeferred = ($reason -eq 'approval' -and -not $ApprovalSignal -and -not $Test)
     if ($DryRun) {
-        [pscustomobject]@{ reason = $reason; categoryEnabled = $categoryEnabled; wouldNotify = [bool]($reason -and $settings.enabled -and $trayReady -and $categoryEnabled); trayReady = $trayReady } | ConvertTo-Json -Compress
+        [pscustomobject]@{ reason = $reason; categoryEnabled = $categoryEnabled; approvalDeferred = $approvalDeferred; wouldNotify = [bool]($reason -and $settings.enabled -and $trayReady -and $categoryEnabled -and -not $approvalDeferred); trayReady = $trayReady } | ConvertTo-Json -Compress
         exit 0
     }
-    if (-not $reason -or (-not $Test -and (-not $settings.enabled -or -not $trayReady -or -not $categoryEnabled))) { [Console]::Out.WriteLine('{}'); exit 0 }
+    if (-not $reason -or $approvalDeferred -or (-not $Test -and (-not $settings.enabled -or -not $trayReady -or -not $categoryEnabled))) { [Console]::Out.WriteLine('{}'); exit 0 }
     $stage = 'prepare-runtime'
     New-Item -ItemType Directory -Path $RuntimeDirectory -Force | Out-Null
     $stage = 'notification-lock'

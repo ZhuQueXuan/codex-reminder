@@ -2,7 +2,7 @@
 param([string]$ArchivePath)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
-if (-not $ArchivePath) { $ArchivePath = Join-Path $root 'Releases\Codex提醒助手-2026.10.13.2-Windows.zip' }
+if (-not $ArchivePath) { $ArchivePath = Join-Path $root 'Releases\Codex提醒助手-2026.10.13.3-Windows.zip' }
 function Assert($condition, $message) { if (-not $condition) { throw $message } }
 $scratch = Join-Path $root ('work\package-check-' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
 $unpacked = Join-Path $scratch '接收者 空格目录'
