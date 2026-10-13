@@ -1,0 +1,11 @@
+/work/
+/App/
+/Releases/
+*.pending
+*.pdb
+*.log
+*.lnk
+.vs/
+.vscode/
+Thumbs.db
+Desktop.ini
