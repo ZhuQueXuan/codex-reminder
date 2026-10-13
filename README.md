@@ -6,6 +6,8 @@ Windows 托盘工具：切到其他软件后，在 Codex 回复完成、需要�
 
 独立开发的非官方工具，与 OpenAI 无隶属关系。
 
+当前版本 **v0.2**。版本按 `v0.1`、`v0.2`、`v0.3` 编号，发布日期单独展示。详见 [版本记录](CHANGELOG.md)：[v0.1](https://github.com/ZhuQueXuan/codex-reminder/releases/tag/v0.1) 是初始公开版，[v0.2](https://github.com/ZhuQueXuan/codex-reminder/releases/tag/v0.2) 修复普通命令的审批误提醒。旧日期标签保留，已有链接继续可用。
+
 ## 功能
 
 - 右下角托盘图标，右键控制提醒，双击打开设置。
@@ -65,8 +67,8 @@ Windows 托盘工具：切到其他软件后，在 Codex 回复完成、需要�
 ```powershell
 # 先退出本目录的托盘实例
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Build.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Package.ps1 -ReleaseVersion 2026.10.13.3
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\BuildInstaller.ps1 -ReleaseVersion 2026.10.13.3
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\Package.ps1 -ReleaseVersion v0.2
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Src\BuildInstaller.ps1 -ReleaseVersion v0.2
 ```
 
 程序生成在 `App`，发行文件生成在 `Releases`。安装包自动包含 EXE 与同名高清屏 `.exe.config`，不要单独移动程序。构建不覆盖已有同版本安装 EXE，再次发布需换版本号。
@@ -92,7 +94,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-event-std
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-event-selection.ps1
 # 先构建发行文件再运行以下两项
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-package.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-installer.ps1 -ReleaseVersion 2026.10.13.3
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\verify-installer.ps1 -ReleaseVersion v0.2
 ```
 
 事件和生命周期测试会临时切换源码目录的设置并恢复，运行前先退出该目录的托盘。夹具与控件测试不操作用户的 Codex 决策按钮。另一台电脑的完整安装、信任与真实提醒，以及所有提问和审批路径，尚未逐项实测。

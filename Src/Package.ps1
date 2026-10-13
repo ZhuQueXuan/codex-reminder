@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param(
-    [ValidatePattern('^\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$')]
-    [string]$ReleaseVersion = (Get-Date -Format 'yyyy.MM.dd')
+    [ValidatePattern('^v\d+\.\d+(?:\.\d+)?$')]
+    [string]$ReleaseVersion = 'v0.2'
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
